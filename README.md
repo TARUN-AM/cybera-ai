@@ -1,20 +1,98 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
+
+# 🛡️ CYBERA
+
+### Predictive Cyber Attack Digital Twin
+
+**Predict the Attack. Simulate the Future. Defend Before It Happens.**
+
+A predictive cyber intelligence platform that models network behaviour,
+forecasts evolving attack trajectories, and simulates defensive actions
+before they are deployed in the real environment.
+
+<br/>
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-22+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+
+<br/>
+
+**[Features](#-core-capabilities) • [Architecture](#-system-architecture) • [Workflow](#-how-cybera-works) • [Setup](#-getting-started) • [Roadmap](#-roadmap)**
+
 </div>
 
-# Run and deploy your AI Studio app
+---
 
-This contains everything you need to run your app locally.
+## Overview
 
-View your app in AI Studio: https://ai.studio/apps/ad8733c6-6732-46f6-a074-1cbc7bef7f8b
+Modern cybersecurity systems often operate reactively:
 
-## Run Locally
+```text
+Attack → Detection → Alert → Investigation → Response
 
-**Prerequisites:**  Node.js
+Observe → Understand → Forecast → Simulate → Defend
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+System Architecture
+                    ┌──────────────────────┐
+                    │   Network Telemetry  │
+                    │  Flow / Host Events  │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Feature Engineering  │
+                    │ & State Extraction   │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+              ┌────────────────────────────────┐
+              │       Cyber State Engine       │
+              │                                │
+              │  Temporal Behaviour Analysis   │
+              │  Graph Relationship Analysis  │
+              └───────────────┬────────────────┘
+                              │
+                              ▼
+                    ┌──────────────────────┐
+                    │   CYBER DIGITAL TWIN │
+                    │                      │
+                    │ Current Network State│
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Attack Forecasting   │
+                    │                      │
+                    │ Future State         │
+                    │ Prediction            │
+                    └──────────┬───────────┘
+                               │
+                ┌──────────────┴──────────────┐
+                │                             │
+                ▼                             ▼
+      ┌──────────────────┐          ┌──────────────────┐
+      │ Attack Trajectory│          │ Explainability   │
+      │                  │          │ Engine           │
+      └────────┬─────────┘          └──────────────────┘
+               │
+               ▼
+      ┌───────────────────────┐
+      │ Counterfactual Engine │
+      │                       │
+      │ "What if we defend?"  │
+      └───────────┬───────────┘
+                  │
+                  ▼
+      ┌───────────────────────┐
+      │ Future Scenario       │
+      │ Comparison             │
+      └───────────┬───────────┘
+                  │
+                  ▼
+      ┌───────────────────────┐
+      │ SOC Decision Support  │
+      └───────────────────────┘
