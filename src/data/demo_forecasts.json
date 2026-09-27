@@ -1,0 +1,5300 @@
+{
+  "campaigns": [
+    {
+      "id": "apt29-infiltration",
+      "name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset": "CIC-IDS2018",
+      "is_held_out": true,
+      "target_host": "ws-101"
+    },
+    {
+      "id": "rbot-fast-syn-c2",
+      "name": "RBot Polymorphic SYN & C2 (Held-Out Unseen B)",
+      "dataset": "CTU-13",
+      "is_held_out": true,
+      "target_host": "dmz-web"
+    },
+    {
+      "id": "cic18-ssh-brute",
+      "name": "SSH/FTP Credential Spray & Escalation (Training)",
+      "dataset": "CIC-IDS2018",
+      "is_held_out": false,
+      "target_host": "ws-102"
+    }
+  ],
+  "topology_nodes": [
+    {
+      "id": "node-ext-01",
+      "ip": "198.51.100.42",
+      "label": "Adversary (External C2/Scan)",
+      "role": "attacker",
+      "subnet": "External WAN",
+      "os": "Kali Linux",
+      "current_state": "RECONNAISSANCE",
+      "predicted_state_5m": "INITIAL_ACCESS",
+      "risk_score": 96,
+      "compromised": true,
+      "isolated": false,
+      "x": 80,
+      "y": 150
+    },
+    {
+      "id": "node-dmz-proxy",
+      "ip": "10.0.1.5",
+      "label": "Edge Reverse Proxy",
+      "role": "dmz_gateway",
+      "subnet": "DMZ 10.0.1.0/24",
+      "os": "Alpine / Nginx",
+      "current_state": "BENIGN",
+      "predicted_state_5m": "RECONNAISSANCE",
+      "risk_score": 34,
+      "compromised": false,
+      "isolated": false,
+      "x": 260,
+      "y": 150
+    },
+    {
+      "id": "node-dmz-web",
+      "ip": "10.0.1.10",
+      "label": "DMZ Web App Cluster",
+      "role": "server",
+      "subnet": "DMZ 10.0.1.0/24",
+      "os": "Ubuntu 22.04 LTS",
+      "current_state": "INITIAL_ACCESS",
+      "predicted_state_5m": "DISCOVERY",
+      "risk_score": 78,
+      "compromised": true,
+      "isolated": false,
+      "x": 440,
+      "y": 110
+    },
+    {
+      "id": "node-ws-101",
+      "ip": "10.0.2.101",
+      "label": "Workstation 101 (Eng)",
+      "role": "workstation",
+      "subnet": "Internal LAN 10.0.2.0/24",
+      "os": "Windows 11 Enterprise",
+      "current_state": "PRIVILEGE_ESCALATION",
+      "predicted_state_5m": "LATERAL_MOVEMENT",
+      "risk_score": 88,
+      "compromised": true,
+      "isolated": false,
+      "x": 440,
+      "y": 260
+    },
+    {
+      "id": "node-ws-102",
+      "ip": "10.0.2.102",
+      "label": "Workstation 102 (Finance)",
+      "role": "workstation",
+      "subnet": "Internal LAN 10.0.2.0/24",
+      "os": "Windows 11 Enterprise",
+      "current_state": "BENIGN",
+      "predicted_state_5m": "LATERAL_MOVEMENT",
+      "risk_score": 62,
+      "compromised": false,
+      "isolated": false,
+      "x": 620,
+      "y": 280
+    },
+    {
+      "id": "node-ws-103",
+      "ip": "10.0.2.103",
+      "label": "Workstation 103 (HR)",
+      "role": "workstation",
+      "subnet": "Internal LAN 10.0.2.0/24",
+      "os": "Windows 11 Enterprise",
+      "current_state": "BENIGN",
+      "predicted_state_5m": "BENIGN",
+      "risk_score": 12,
+      "compromised": false,
+      "isolated": false,
+      "x": 620,
+      "y": 390
+    },
+    {
+      "id": "node-srv-dc",
+      "ip": "10.0.3.5",
+      "label": "Primary Domain Controller",
+      "role": "domain_controller",
+      "subnet": "Core Services 10.0.3.0/24",
+      "os": "Windows Server 2022",
+      "current_state": "BENIGN",
+      "predicted_state_5m": "LATERAL_MOVEMENT",
+      "risk_score": 72,
+      "compromised": false,
+      "isolated": false,
+      "x": 780,
+      "y": 130
+    },
+    {
+      "id": "node-srv-db",
+      "ip": "10.0.3.20",
+      "label": "Corporate SQL Database",
+      "role": "database",
+      "subnet": "Core Services 10.0.3.0/24",
+      "os": "RHEL 9 / PostgreSQL",
+      "current_state": "BENIGN",
+      "predicted_state_5m": "EXFILTRATION_IMPACT",
+      "risk_score": 54,
+      "compromised": false,
+      "isolated": false,
+      "x": 780,
+      "y": 250
+    },
+    {
+      "id": "node-iot-cam",
+      "ip": "10.0.4.50",
+      "label": "Facility IoT Surveillance",
+      "role": "iot_device",
+      "subnet": "IoT 10.0.4.0/24",
+      "os": "Embedded Linux",
+      "current_state": "BENIGN",
+      "predicted_state_5m": "BENIGN",
+      "risk_score": 18,
+      "compromised": false,
+      "isolated": false,
+      "x": 260,
+      "y": 360
+    }
+  ],
+  "topology_edges": [
+    {
+      "id": "e-ext-dmz",
+      "source": "node-ext-01",
+      "target": "node-dmz-proxy",
+      "protocol": "HTTPS",
+      "port": 443,
+      "bytes_per_sec": 245000,
+      "flow_count": 420,
+      "threat_level": "suspicious",
+      "blocked": false
+    },
+    {
+      "id": "e-proxy-web",
+      "source": "node-dmz-proxy",
+      "target": "node-dmz-web",
+      "protocol": "HTTP",
+      "port": 8080,
+      "bytes_per_sec": 185000,
+      "flow_count": 380,
+      "threat_level": "critical",
+      "blocked": false
+    },
+    {
+      "id": "e-web-ws101",
+      "source": "node-dmz-web",
+      "target": "node-ws-101",
+      "protocol": "SSH",
+      "port": 22,
+      "bytes_per_sec": 42000,
+      "flow_count": 84,
+      "threat_level": "critical",
+      "blocked": false
+    },
+    {
+      "id": "e-ws101-ws102",
+      "source": "node-ws-101",
+      "target": "node-ws-102",
+      "protocol": "SMB",
+      "port": 445,
+      "bytes_per_sec": 96000,
+      "flow_count": 142,
+      "threat_level": "critical",
+      "blocked": false
+    },
+    {
+      "id": "e-ws101-dc",
+      "source": "node-ws-101",
+      "target": "node-srv-dc",
+      "protocol": "Kerberos/LDAP",
+      "port": 88,
+      "bytes_per_sec": 18200,
+      "flow_count": 65,
+      "threat_level": "critical",
+      "blocked": false
+    },
+    {
+      "id": "e-ws102-db",
+      "source": "node-ws-102",
+      "target": "node-srv-db",
+      "protocol": "PostgreSQL",
+      "port": 5432,
+      "bytes_per_sec": 12000,
+      "flow_count": 32,
+      "threat_level": "nominal",
+      "blocked": false
+    },
+    {
+      "id": "e-dc-db",
+      "source": "node-srv-dc",
+      "target": "node-srv-db",
+      "protocol": "RPC",
+      "port": 135,
+      "bytes_per_sec": 4500,
+      "flow_count": 12,
+      "threat_level": "nominal",
+      "blocked": false
+    },
+    {
+      "id": "e-proxy-iot",
+      "source": "node-dmz-proxy",
+      "target": "node-iot-cam",
+      "protocol": "RTSP",
+      "port": 554,
+      "bytes_per_sec": 850000,
+      "flow_count": 18,
+      "threat_level": "nominal",
+      "blocked": false
+    }
+  ],
+  "counterfactual_actions": [
+    {
+      "id": "act-isolate-ws101",
+      "action_type": "isolate_host",
+      "target": "node-ws-101 (10.0.2.101)",
+      "label": "Isolate Compromised Host (WS-101)",
+      "description": "Sever all internal east-west traffic from Workstation 101 via host firewall and 802.1X VLAN quarantine.",
+      "simulated_risk_before": 88,
+      "simulated_risk_after": 14,
+      "risk_reduction_pct": 84.1,
+      "blast_radius_nodes_saved": 4,
+      "before_forecast": {
+        "BENIGN": 0.02,
+        "RECONNAISSANCE": 0.04,
+        "INITIAL_ACCESS": 0.06,
+        "DISCOVERY": 0.08,
+        "PRIVILEGE_ESCALATION": 0.12,
+        "LATERAL_MOVEMENT": 0.44,
+        "COMMAND_AND_CONTROL": 0.16,
+        "EXFILTRATION_IMPACT": 0.08
+      },
+      "after_forecast": {
+        "BENIGN": 0.82,
+        "RECONNAISSANCE": 0.08,
+        "INITIAL_ACCESS": 0.04,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.01,
+        "LATERAL_MOVEMENT": 0.01,
+        "COMMAND_AND_CONTROL": 0.01,
+        "EXFILTRATION_IMPACT": 0
+      },
+      "recommendation_strength": "CRITICAL_RECOMMENDED",
+      "technical_command": "nexus-agentctl quarantine --host 10.0.2.101 --vlan 999 --revoke-kerberos-tgt"
+    },
+    {
+      "id": "act-block-smb",
+      "action_type": "block_port",
+      "target": "TCP 445 (SMB) across LAN Subnet",
+      "label": "Block Internal SMB (Port 445)",
+      "description": "Enforce immediate ACL block on TCP port 445 between Workstation VLAN (10.0.2.0/24) and Core Servers (10.0.3.0/24).",
+      "simulated_risk_before": 88,
+      "simulated_risk_after": 29,
+      "risk_reduction_pct": 67,
+      "blast_radius_nodes_saved": 3,
+      "before_forecast": {
+        "BENIGN": 0.02,
+        "RECONNAISSANCE": 0.04,
+        "INITIAL_ACCESS": 0.06,
+        "DISCOVERY": 0.08,
+        "PRIVILEGE_ESCALATION": 0.12,
+        "LATERAL_MOVEMENT": 0.44,
+        "COMMAND_AND_CONTROL": 0.16,
+        "EXFILTRATION_IMPACT": 0.08
+      },
+      "after_forecast": {
+        "BENIGN": 0.65,
+        "RECONNAISSANCE": 0.12,
+        "INITIAL_ACCESS": 0.08,
+        "DISCOVERY": 0.09,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.02,
+        "COMMAND_AND_CONTROL": 0.01,
+        "EXFILTRATION_IMPACT": 0
+      },
+      "recommendation_strength": "HIGH_RECOMMENDED",
+      "technical_command": "iptables -I FORWARD -s 10.0.2.0/24 -d 10.0.3.0/24 -p tcp --dport 445 -j DROP"
+    },
+    {
+      "id": "act-block-c2-ip",
+      "action_type": "block_ip",
+      "target": "198.51.100.42 (Adversary WAN)",
+      "label": "Drop External Attacker IP",
+      "description": "BGP Blackhole and Edge Firewall Drop of adversary ingress IP at perimeter border routers.",
+      "simulated_risk_before": 88,
+      "simulated_risk_after": 38,
+      "risk_reduction_pct": 56.8,
+      "blast_radius_nodes_saved": 2,
+      "before_forecast": {
+        "BENIGN": 0.02,
+        "RECONNAISSANCE": 0.04,
+        "INITIAL_ACCESS": 0.06,
+        "DISCOVERY": 0.08,
+        "PRIVILEGE_ESCALATION": 0.12,
+        "LATERAL_MOVEMENT": 0.44,
+        "COMMAND_AND_CONTROL": 0.16,
+        "EXFILTRATION_IMPACT": 0.08
+      },
+      "after_forecast": {
+        "BENIGN": 0.58,
+        "RECONNAISSANCE": 0.05,
+        "INITIAL_ACCESS": 0.05,
+        "DISCOVERY": 0.12,
+        "PRIVILEGE_ESCALATION": 0.08,
+        "LATERAL_MOVEMENT": 0.08,
+        "COMMAND_AND_CONTROL": 0.02,
+        "EXFILTRATION_IMPACT": 0.02
+      },
+      "recommendation_strength": "HIGH_RECOMMENDED",
+      "technical_command": "edge-firewall drop --src 198.51.100.42/32 --zone untrusted --sync-edge"
+    },
+    {
+      "id": "act-segment-dmz",
+      "action_type": "segment_network",
+      "target": "DMZ 10.0.1.0/24 <-> Internal 10.0.2.0/24",
+      "label": "Strict DMZ Micro-Segmentation",
+      "description": "Enforce zero-trust ingress gateway between DMZ cluster and internal user workstation subnets.",
+      "simulated_risk_before": 88,
+      "simulated_risk_after": 22,
+      "risk_reduction_pct": 75,
+      "blast_radius_nodes_saved": 4,
+      "before_forecast": {
+        "BENIGN": 0.02,
+        "RECONNAISSANCE": 0.04,
+        "INITIAL_ACCESS": 0.06,
+        "DISCOVERY": 0.08,
+        "PRIVILEGE_ESCALATION": 0.12,
+        "LATERAL_MOVEMENT": 0.44,
+        "COMMAND_AND_CONTROL": 0.16,
+        "EXFILTRATION_IMPACT": 0.08
+      },
+      "after_forecast": {
+        "BENIGN": 0.74,
+        "RECONNAISSANCE": 0.1,
+        "INITIAL_ACCESS": 0.06,
+        "DISCOVERY": 0.04,
+        "PRIVILEGE_ESCALATION": 0.02,
+        "LATERAL_MOVEMENT": 0.02,
+        "COMMAND_AND_CONTROL": 0.01,
+        "EXFILTRATION_IMPACT": 0.01
+      },
+      "recommendation_strength": "CRITICAL_RECOMMENDED",
+      "technical_command": "sdn-controller segment --isolate dmz-vlan-10 --target user-vlan-20 --deny-all"
+    }
+  ],
+  "state_windows": [
+    {
+      "window_id": 0,
+      "timestamp_offset_sec": 0,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "BENIGN",
+      "baseline_predicted_stage": "BENIGN",
+      "baseline_stage_probs": {
+        "BENIGN": 0.74,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "10.0.2.55",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 3.45,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "RECONNAISSANCE",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 420
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 3.45,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Nominal baseline network behavior within normal Gaussian entropy bounds. Low anomaly divergence.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 1,
+      "timestamp_offset_sec": 30,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "RECONNAISSANCE",
+      "baseline_predicted_stage": "RECONNAISSANCE",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.74,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 445,
+        "protocol": 6,
+        "flow_duration_ms": 120,
+        "fwd_pkts_per_sec": 1240,
+        "bwd_pkts_per_sec": 12,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 64,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 1240,
+        "rst_flag_count": 980,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 1024,
+        "tcp_win_variance": 0.05,
+        "ttl_mean": 51.4,
+        "ttl_variance": 8.2,
+        "payload_entropy": 5.8,
+        "port_entropy": 4.95,
+        "dst_entropy": 0.45,
+        "proto_entropy": 1.4,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "DISCOVERY",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "PRIVILEGE_ESCALATION",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 390
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 4.95,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 1240,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "High destination port entropy (H=4.95) + SYN flag burst indicates active reconnaissance scan preceding exploit delivery.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 2,
+      "timestamp_offset_sec": 60,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "RECONNAISSANCE",
+      "baseline_predicted_stage": "RECONNAISSANCE",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.74,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 445,
+        "protocol": 6,
+        "flow_duration_ms": 120,
+        "fwd_pkts_per_sec": 1240,
+        "bwd_pkts_per_sec": 12,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 64,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 1240,
+        "rst_flag_count": 980,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 1024,
+        "tcp_win_variance": 0.05,
+        "ttl_mean": 51.4,
+        "ttl_variance": 8.2,
+        "payload_entropy": 5.8,
+        "port_entropy": 4.95,
+        "dst_entropy": 0.45,
+        "proto_entropy": 1.4,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "DISCOVERY",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "PRIVILEGE_ESCALATION",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 360
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 4.95,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 1240,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "High destination port entropy (H=4.95) + SYN flag burst indicates active reconnaissance scan preceding exploit delivery.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 3,
+      "timestamp_offset_sec": 90,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "INITIAL_ACCESS",
+      "baseline_predicted_stage": "INITIAL_ACCESS",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.74,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 22,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 48,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "DISCOVERY",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "PRIVILEGE_ESCALATION",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 330
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Credential spray burst on port 22 detected with high PSH flag frequency. Next state transition points to internal discovery & privilege escalation.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 4,
+      "timestamp_offset_sec": 120,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "DISCOVERY",
+      "baseline_predicted_stage": "DISCOVERY",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.74,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 4.12,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.88
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "PRIVILEGE_ESCALATION",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 300
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.88,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Nominal baseline network behavior within normal Gaussian entropy bounds. Low anomaly divergence.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 5,
+      "timestamp_offset_sec": 150,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "PRIVILEGE_ESCALATION",
+      "baseline_predicted_stage": "PRIVILEGE_ESCALATION",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.74,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 48,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "COMMAND_AND_CONTROL",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 270
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Nominal baseline network behavior within normal Gaussian entropy bounds. Low anomaly divergence.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 6,
+      "timestamp_offset_sec": 180,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "LATERAL_MOVEMENT",
+      "baseline_predicted_stage": "LATERAL_MOVEMENT",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.74,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 445,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.88
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "COMMAND_AND_CONTROL",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 240
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.88,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "High subnetwork fan-out index (0.88) across /24 enterprise subnet with SMB port 445 traffic. Imminent C2 or Domain Controller targeting.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 7,
+      "timestamp_offset_sec": 210,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "COMMAND_AND_CONTROL",
+      "baseline_predicted_stage": "COMMAND_AND_CONTROL",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.74,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 8443,
+        "protocol": 6,
+        "flow_duration_ms": 15400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 480,
+        "pkt_len_std": 24,
+        "fwd_iat_mean": 5000,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 7.82,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 0.12,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 180
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 7.82,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 0.12,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Near-zero connection rate entropy (H=0.12) and high encrypted payload entropy (H=7.82) proves periodic C2 beaconing.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 8,
+      "timestamp_offset_sec": 240,
+      "host_id": "ws-101",
+      "host_ip": "10.0.2.101",
+      "host_role": "workstation",
+      "campaign_id": "apt29-infiltration",
+      "campaign_name": "APT29 Enterprise Infiltration (Held-Out Unseen A)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": true,
+      "actual_stage": "EXFILTRATION_IMPACT",
+      "baseline_predicted_stage": "EXFILTRATION_IMPACT",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.74
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.101",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 8420,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 14250000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 0.04,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 120
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Extreme asymmetric down/up bandwidth ratio (0.04) and mega-flow bandwidth. Exfiltration / data destruction phase.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 0,
+      "timestamp_offset_sec": 0,
+      "host_id": "dmz-web",
+      "host_ip": "10.0.1.10",
+      "host_role": "dmz_gateway",
+      "campaign_id": "rbot-fast-syn-c2",
+      "campaign_name": "RBot Polymorphic SYN & C2 (Held-Out Unseen B)",
+      "dataset_source": "CTU-13",
+      "is_held_out": true,
+      "actual_stage": "BENIGN",
+      "baseline_predicted_stage": "BENIGN",
+      "baseline_stage_probs": {
+        "BENIGN": 0.74,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "10.0.2.55",
+        "dst_ip": "10.0.1.10",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 3.45,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "RECONNAISSANCE",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "RECONNAISSANCE",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 360
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 3.45,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Nominal baseline network behavior within normal Gaussian entropy bounds. Low anomaly divergence.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 1,
+      "timestamp_offset_sec": 30,
+      "host_id": "dmz-web",
+      "host_ip": "10.0.1.10",
+      "host_role": "dmz_gateway",
+      "campaign_id": "rbot-fast-syn-c2",
+      "campaign_name": "RBot Polymorphic SYN & C2 (Held-Out Unseen B)",
+      "dataset_source": "CTU-13",
+      "is_held_out": true,
+      "actual_stage": "RECONNAISSANCE",
+      "baseline_predicted_stage": "RECONNAISSANCE",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.74,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.1.10",
+        "dst_port": 445,
+        "protocol": 6,
+        "flow_duration_ms": 120,
+        "fwd_pkts_per_sec": 1240,
+        "bwd_pkts_per_sec": 12,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 64,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 1240,
+        "rst_flag_count": 980,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 1024,
+        "tcp_win_variance": 0.05,
+        "ttl_mean": 51.4,
+        "ttl_variance": 8.2,
+        "payload_entropy": 5.8,
+        "port_entropy": 4.95,
+        "dst_entropy": 0.45,
+        "proto_entropy": 1.4,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "COMMAND_AND_CONTROL",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 330
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 4.95,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 1240,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "High destination port entropy (H=4.95) + SYN flag burst indicates active reconnaissance scan preceding exploit delivery.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 2,
+      "timestamp_offset_sec": 60,
+      "host_id": "dmz-web",
+      "host_ip": "10.0.1.10",
+      "host_role": "dmz_gateway",
+      "campaign_id": "rbot-fast-syn-c2",
+      "campaign_name": "RBot Polymorphic SYN & C2 (Held-Out Unseen B)",
+      "dataset_source": "CTU-13",
+      "is_held_out": true,
+      "actual_stage": "INITIAL_ACCESS",
+      "baseline_predicted_stage": "INITIAL_ACCESS",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.74,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.1.10",
+        "dst_port": 22,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 48,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "COMMAND_AND_CONTROL",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 300
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Credential spray burst on port 22 detected with high PSH flag frequency. Next state transition points to internal discovery & privilege escalation.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 3,
+      "timestamp_offset_sec": 90,
+      "host_id": "dmz-web",
+      "host_ip": "10.0.1.10",
+      "host_role": "dmz_gateway",
+      "campaign_id": "rbot-fast-syn-c2",
+      "campaign_name": "RBot Polymorphic SYN & C2 (Held-Out Unseen B)",
+      "dataset_source": "CTU-13",
+      "is_held_out": true,
+      "actual_stage": "COMMAND_AND_CONTROL",
+      "baseline_predicted_stage": "COMMAND_AND_CONTROL",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.74,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.1.10",
+        "dst_port": 8443,
+        "protocol": 6,
+        "flow_duration_ms": 15400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 480,
+        "pkt_len_std": 24,
+        "fwd_iat_mean": 5000,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 7.82,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 0.12,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 250
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 7.82,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 0.12,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Near-zero connection rate entropy (H=0.12) and high encrypted payload entropy (H=7.82) proves periodic C2 beaconing.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 4,
+      "timestamp_offset_sec": 120,
+      "host_id": "dmz-web",
+      "host_ip": "10.0.1.10",
+      "host_role": "dmz_gateway",
+      "campaign_id": "rbot-fast-syn-c2",
+      "campaign_name": "RBot Polymorphic SYN & C2 (Held-Out Unseen B)",
+      "dataset_source": "CTU-13",
+      "is_held_out": true,
+      "actual_stage": "LATERAL_MOVEMENT",
+      "baseline_predicted_stage": "LATERAL_MOVEMENT",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.74,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.1.10",
+        "dst_port": 445,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.88
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 200
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.88,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "High subnetwork fan-out index (0.88) across /24 enterprise subnet with SMB port 445 traffic. Imminent C2 or Domain Controller targeting.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 5,
+      "timestamp_offset_sec": 150,
+      "host_id": "dmz-web",
+      "host_ip": "10.0.1.10",
+      "host_role": "dmz_gateway",
+      "campaign_id": "rbot-fast-syn-c2",
+      "campaign_name": "RBot Polymorphic SYN & C2 (Held-Out Unseen B)",
+      "dataset_source": "CTU-13",
+      "is_held_out": true,
+      "actual_stage": "EXFILTRATION_IMPACT",
+      "baseline_predicted_stage": "EXFILTRATION_IMPACT",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.74
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.1.10",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 8420,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 14250000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 0.04,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 150
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Extreme asymmetric down/up bandwidth ratio (0.04) and mega-flow bandwidth. Exfiltration / data destruction phase.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 0,
+      "timestamp_offset_sec": 0,
+      "host_id": "ws-102",
+      "host_ip": "10.0.2.102",
+      "host_role": "workstation",
+      "campaign_id": "cic18-ssh-brute",
+      "campaign_name": "SSH/FTP Credential Spray & Escalation (Training)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": false,
+      "actual_stage": "BENIGN",
+      "baseline_predicted_stage": "BENIGN",
+      "baseline_stage_probs": {
+        "BENIGN": 0.74,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "10.0.2.55",
+        "dst_ip": "10.0.2.102",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 3.45,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "RECONNAISSANCE",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 300
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 3.45,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Nominal baseline network behavior within normal Gaussian entropy bounds. Low anomaly divergence.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 1,
+      "timestamp_offset_sec": 30,
+      "host_id": "ws-102",
+      "host_ip": "10.0.2.102",
+      "host_role": "workstation",
+      "campaign_id": "cic18-ssh-brute",
+      "campaign_name": "SSH/FTP Credential Spray & Escalation (Training)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": false,
+      "actual_stage": "RECONNAISSANCE",
+      "baseline_predicted_stage": "RECONNAISSANCE",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.74,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.102",
+        "dst_port": 445,
+        "protocol": 6,
+        "flow_duration_ms": 120,
+        "fwd_pkts_per_sec": 1240,
+        "bwd_pkts_per_sec": 12,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 64,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 1240,
+        "rst_flag_count": 980,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 1024,
+        "tcp_win_variance": 0.05,
+        "ttl_mean": 51.4,
+        "ttl_variance": 8.2,
+        "payload_entropy": 5.8,
+        "port_entropy": 4.95,
+        "dst_entropy": 0.45,
+        "proto_entropy": 1.4,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "INITIAL_ACCESS",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "DISCOVERY",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 270
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 4.95,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 1240,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "High destination port entropy (H=4.95) + SYN flag burst indicates active reconnaissance scan preceding exploit delivery.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 2,
+      "timestamp_offset_sec": 60,
+      "host_id": "ws-102",
+      "host_ip": "10.0.2.102",
+      "host_role": "workstation",
+      "campaign_id": "cic18-ssh-brute",
+      "campaign_name": "SSH/FTP Credential Spray & Escalation (Training)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": false,
+      "actual_stage": "INITIAL_ACCESS",
+      "baseline_predicted_stage": "INITIAL_ACCESS",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.74,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.102",
+        "dst_port": 22,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 48,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "DISCOVERY",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "PRIVILEGE_ESCALATION",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 240
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Credential spray burst on port 22 detected with high PSH flag frequency. Next state transition points to internal discovery & privilege escalation.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 3,
+      "timestamp_offset_sec": 90,
+      "host_id": "ws-102",
+      "host_ip": "10.0.2.102",
+      "host_role": "workstation",
+      "campaign_id": "cic18-ssh-brute",
+      "campaign_name": "SSH/FTP Credential Spray & Escalation (Training)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": false,
+      "actual_stage": "DISCOVERY",
+      "baseline_predicted_stage": "DISCOVERY",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.74,
+        "PRIVILEGE_ESCALATION": 0.03,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.102",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 6,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 4.12,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.88
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "PRIVILEGE_ESCALATION",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 210
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.88,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Nominal baseline network behavior within normal Gaussian entropy bounds. Low anomaly divergence.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    },
+    {
+      "window_id": 4,
+      "timestamp_offset_sec": 120,
+      "host_id": "ws-102",
+      "host_ip": "10.0.2.102",
+      "host_role": "workstation",
+      "campaign_id": "cic18-ssh-brute",
+      "campaign_name": "SSH/FTP Credential Spray & Escalation (Training)",
+      "dataset_source": "CIC-IDS2018",
+      "is_held_out": false,
+      "actual_stage": "PRIVILEGE_ESCALATION",
+      "baseline_predicted_stage": "PRIVILEGE_ESCALATION",
+      "baseline_stage_probs": {
+        "BENIGN": 0.03,
+        "RECONNAISSANCE": 0.03,
+        "INITIAL_ACCESS": 0.03,
+        "DISCOVERY": 0.03,
+        "PRIVILEGE_ESCALATION": 0.74,
+        "LATERAL_MOVEMENT": 0.03,
+        "COMMAND_AND_CONTROL": 0.03,
+        "EXFILTRATION_IMPACT": 0.03
+      },
+      "baseline_detection_lead_sec": -30,
+      "features": {
+        "src_ip": "198.51.100.42",
+        "dst_ip": "10.0.2.102",
+        "dst_port": 443,
+        "protocol": 6,
+        "flow_duration_ms": 3400,
+        "fwd_pkts_per_sec": 85,
+        "bwd_pkts_per_sec": 64,
+        "flow_bytes_per_sec": 32000,
+        "pkt_len_mean": 850,
+        "pkt_len_std": 180,
+        "fwd_iat_mean": 42,
+        "bwd_iat_mean": 38,
+        "syn_flag_count": 12,
+        "rst_flag_count": 4,
+        "ack_flag_count": 850,
+        "fin_flag_count": 14,
+        "psh_flag_count": 48,
+        "down_up_ratio": 1.25,
+        "avg_init_win_bytes": 64240,
+        "tcp_win_variance": 124.5,
+        "ttl_mean": 64,
+        "ttl_variance": 0.4,
+        "payload_entropy": 5.8,
+        "port_entropy": 0.82,
+        "dst_entropy": 0.45,
+        "proto_entropy": 0.3,
+        "conn_rate_entropy": 2.85,
+        "subnetwork_fanout": 0.05
+      },
+      "forecast": {
+        "t_plus_1min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.84,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.84
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.023
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.023
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.023
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.023
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.023
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.023
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.023
+            }
+          ]
+        },
+        "t_plus_2min": {
+          "stage": "LATERAL_MOVEMENT",
+          "probability": 0.76,
+          "ranked_probs": [
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.76
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.034
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.034
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.034
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.034
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.034
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.034
+            },
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.034
+            }
+          ]
+        },
+        "t_plus_5min": {
+          "stage": "EXFILTRATION_IMPACT",
+          "probability": 0.68,
+          "ranked_probs": [
+            {
+              "stage": "EXFILTRATION_IMPACT",
+              "prob": 0.68
+            },
+            {
+              "stage": "BENIGN",
+              "prob": 0.046
+            },
+            {
+              "stage": "RECONNAISSANCE",
+              "prob": 0.046
+            },
+            {
+              "stage": "INITIAL_ACCESS",
+              "prob": 0.046
+            },
+            {
+              "stage": "DISCOVERY",
+              "prob": 0.046
+            },
+            {
+              "stage": "PRIVILEGE_ESCALATION",
+              "prob": 0.046
+            },
+            {
+              "stage": "LATERAL_MOVEMENT",
+              "prob": 0.046
+            },
+            {
+              "stage": "COMMAND_AND_CONTROL",
+              "prob": 0.046
+            }
+          ]
+        },
+        "confidence_score": 0.88,
+        "forecast_lead_time_sec": 180
+      },
+      "explainability": {
+        "attention_weights": [
+          {
+            "feature": "Port Entropy (H_port)",
+            "weight": 0.38,
+            "contribution_pct": 38,
+            "raw_val": 0.82,
+            "benchmark": 0.85
+          },
+          {
+            "feature": "SYN Flag Spike Ratio",
+            "weight": 0.27,
+            "contribution_pct": 27,
+            "raw_val": 12,
+            "benchmark": 15
+          },
+          {
+            "feature": "Subnet Fan-out Index",
+            "weight": 0.18,
+            "contribution_pct": 18,
+            "raw_val": 0.05,
+            "benchmark": 0.05
+          },
+          {
+            "feature": "Payload Shannon Entropy",
+            "weight": 0.11,
+            "contribution_pct": 11,
+            "raw_val": 5.8,
+            "benchmark": 3.5
+          },
+          {
+            "feature": "IAT Periodicity Variance",
+            "weight": 0.06,
+            "contribution_pct": 6,
+            "raw_val": 2.85,
+            "benchmark": 2.8
+          }
+        ],
+        "top_rationale": "Nominal baseline network behavior within normal Gaussian entropy bounds. Low anomaly divergence.",
+        "shap_factors": [
+          {
+            "factor": "Destination Port Shannon Entropy",
+            "direction": "increases_risk",
+            "impact": 0.42
+          },
+          {
+            "factor": "SYN / RST Ratio Deviation",
+            "direction": "increases_risk",
+            "impact": 0.28
+          },
+          {
+            "factor": "Inter-Arrival Time Periodicity",
+            "direction": "increases_risk",
+            "impact": 0.19
+          },
+          {
+            "factor": "Legitimate Domain Whitelist Match",
+            "direction": "decreases_risk",
+            "impact": -0.12
+          }
+        ]
+      }
+    }
+  ],
+  "baseline_comparison": {
+    "baseline_name": "Multinomial Logistic Regression (L2 Regularized)",
+    "world_model_name": "NEXUS Cyber World Model (Temporal Transformer + Graph State)",
+    "evaluation_date": "2026-09-27",
+    "metrics": {
+      "mean_forecast_lead_time_sec": {
+        "baseline": -28.4,
+        "nexus_world_model": 342.6,
+        "lead_time_delta_sec": 371
+      },
+      "multi_step_accuracy": {
+        "t_plus_1min": {
+          "baseline": 0.512,
+          "nexus_world_model": 0.894
+        },
+        "t_plus_2min": {
+          "baseline": 0.435,
+          "nexus_world_model": 0.841
+        },
+        "t_plus_3min": {
+          "baseline": 0.362,
+          "nexus_world_model": 0.785
+        },
+        "t_plus_5min": {
+          "baseline": 0.281,
+          "nexus_world_model": 0.728
+        }
+      },
+      "unseen_campaign_generalization_f1": {
+        "apt29_infiltration_cic": {
+          "baseline": 0.428,
+          "nexus_world_model": 0.834
+        },
+        "ctu13_rbot_polymorphic": {
+          "baseline": 0.389,
+          "nexus_world_model": 0.812
+        },
+        "ctu13_p2p_lateral": {
+          "baseline": 0.401,
+          "nexus_world_model": 0.796
+        },
+        "overall_held_out_mean": {
+          "baseline": 0.406,
+          "nexus_world_model": 0.814
+        }
+      },
+      "false_forecast_rate": {
+        "baseline_false_alarm_rate": 0.142,
+        "nexus_false_forecast_rate": 0.048
+      },
+      "calibration_brier_score": {
+        "baseline": 0.264,
+        "nexus_world_model": 0.082
+      }
+    },
+    "confusion_matrix": {
+      "stages": [
+        "BENIGN",
+        "RECONNAISSANCE",
+        "INITIAL_ACCESS",
+        "DISCOVERY",
+        "PRIVILEGE_ESCALATION",
+        "LATERAL_MOVEMENT",
+        "COMMAND_AND_CONTROL",
+        "EXFILTRATION_IMPACT"
+      ],
+      "baseline_matrix": [
+        [
+          92,
+          4,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          8,
+          62,
+          14,
+          8,
+          3,
+          2,
+          2,
+          1
+        ],
+        [
+          3,
+          11,
+          58,
+          12,
+          6,
+          5,
+          3,
+          2
+        ],
+        [
+          2,
+          7,
+          10,
+          54,
+          12,
+          8,
+          4,
+          3
+        ],
+        [
+          1,
+          4,
+          8,
+          9,
+          51,
+          14,
+          7,
+          6
+        ],
+        [
+          1,
+          2,
+          6,
+          8,
+          11,
+          56,
+          8,
+          8
+        ],
+        [
+          1,
+          2,
+          4,
+          5,
+          6,
+          9,
+          64,
+          9
+        ],
+        [
+          0,
+          1,
+          3,
+          4,
+          5,
+          8,
+          10,
+          69
+        ]
+      ],
+      "nexus_matrix": [
+        [
+          98,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          89,
+          4,
+          2,
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          3,
+          88,
+          4,
+          2,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          2,
+          3,
+          86,
+          4,
+          3,
+          1,
+          1
+        ],
+        [
+          0,
+          1,
+          2,
+          4,
+          84,
+          5,
+          2,
+          2
+        ],
+        [
+          0,
+          1,
+          1,
+          3,
+          4,
+          86,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2,
+          3,
+          90,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          2,
+          3,
+          4,
+          89
+        ]
+      ]
+    }
+  }
+}

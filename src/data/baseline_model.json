@@ -1,0 +1,232 @@
+{
+  "baseline_name": "Multinomial Logistic Regression (L2 Regularized)",
+  "world_model_name": "NEXUS Cyber World Model (Temporal Transformer + Graph State)",
+  "evaluation_date": "2026-09-27",
+  "metrics": {
+    "mean_forecast_lead_time_sec": {
+      "baseline": -28.4,
+      "nexus_world_model": 342.6,
+      "lead_time_delta_sec": 371
+    },
+    "multi_step_accuracy": {
+      "t_plus_1min": {
+        "baseline": 0.512,
+        "nexus_world_model": 0.894
+      },
+      "t_plus_2min": {
+        "baseline": 0.435,
+        "nexus_world_model": 0.841
+      },
+      "t_plus_3min": {
+        "baseline": 0.362,
+        "nexus_world_model": 0.785
+      },
+      "t_plus_5min": {
+        "baseline": 0.281,
+        "nexus_world_model": 0.728
+      }
+    },
+    "unseen_campaign_generalization_f1": {
+      "apt29_infiltration_cic": {
+        "baseline": 0.428,
+        "nexus_world_model": 0.834
+      },
+      "ctu13_rbot_polymorphic": {
+        "baseline": 0.389,
+        "nexus_world_model": 0.812
+      },
+      "ctu13_p2p_lateral": {
+        "baseline": 0.401,
+        "nexus_world_model": 0.796
+      },
+      "overall_held_out_mean": {
+        "baseline": 0.406,
+        "nexus_world_model": 0.814
+      }
+    },
+    "false_forecast_rate": {
+      "baseline_false_alarm_rate": 0.142,
+      "nexus_false_forecast_rate": 0.048
+    },
+    "calibration_brier_score": {
+      "baseline": 0.264,
+      "nexus_world_model": 0.082
+    }
+  },
+  "confusion_matrix": {
+    "stages": [
+      "BENIGN",
+      "RECONNAISSANCE",
+      "INITIAL_ACCESS",
+      "DISCOVERY",
+      "PRIVILEGE_ESCALATION",
+      "LATERAL_MOVEMENT",
+      "COMMAND_AND_CONTROL",
+      "EXFILTRATION_IMPACT"
+    ],
+    "baseline_matrix": [
+      [
+        92,
+        4,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0
+      ],
+      [
+        8,
+        62,
+        14,
+        8,
+        3,
+        2,
+        2,
+        1
+      ],
+      [
+        3,
+        11,
+        58,
+        12,
+        6,
+        5,
+        3,
+        2
+      ],
+      [
+        2,
+        7,
+        10,
+        54,
+        12,
+        8,
+        4,
+        3
+      ],
+      [
+        1,
+        4,
+        8,
+        9,
+        51,
+        14,
+        7,
+        6
+      ],
+      [
+        1,
+        2,
+        6,
+        8,
+        11,
+        56,
+        8,
+        8
+      ],
+      [
+        1,
+        2,
+        4,
+        5,
+        6,
+        9,
+        64,
+        9
+      ],
+      [
+        0,
+        1,
+        3,
+        4,
+        5,
+        8,
+        10,
+        69
+      ]
+    ],
+    "nexus_matrix": [
+      [
+        98,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        89,
+        4,
+        2,
+        1,
+        1,
+        1,
+        0
+      ],
+      [
+        1,
+        3,
+        88,
+        4,
+        2,
+        1,
+        1,
+        0
+      ],
+      [
+        0,
+        2,
+        3,
+        86,
+        4,
+        3,
+        1,
+        1
+      ],
+      [
+        0,
+        1,
+        2,
+        4,
+        84,
+        5,
+        2,
+        2
+      ],
+      [
+        0,
+        1,
+        1,
+        3,
+        4,
+        86,
+        3,
+        2
+      ],
+      [
+        0,
+        0,
+        1,
+        2,
+        2,
+        3,
+        90,
+        2
+      ],
+      [
+        0,
+        0,
+        1,
+        1,
+        2,
+        3,
+        4,
+        89
+      ]
+    ]
+  }
+}
