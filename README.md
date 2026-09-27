@@ -20,6 +20,13 @@ before they are deployed in the real environment.
 
 <br/>
 
+<br/>
+
+[![🚀 Live Demo](https://img.shields.io/badge/🚀_LIVE_DEMO-CYBERA-00C853?style=for-the-badge)](https://cybera-ai.onrender.com/)
+[![📂 GitHub](https://img.shields.io/badge/📂_GITHUB-Repository-181717?style=for-the-badge&logo=github)](https://github.com/TARUN-AM/cybera-ai)
+
+<br/>
+
 **[Features](#-core-capabilities) • [Architecture](#-system-architecture) • [Workflow](#-how-cybera-works) • [Setup](#-getting-started) • [Roadmap](#-roadmap)**
 
 </div>
